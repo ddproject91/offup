@@ -1,0 +1,985 @@
+<title>OFF UP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  @font-face {
+    font-family: 'Pretendard';
+    src: url('PretendardVariable.woff2') format('woff2');
+    font-weight: 45 920;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  :root {
+    --bg: #F2F2EF;
+    --surface: #FFFFFF;
+    --surface-2: #F5F5F2;
+    --line: #E1E1DD;
+    --text: #17181A;
+    --text-soft: #5B5D61;
+    --text-faint: #9A9C9F;
+    --accent: #FF4A2B;
+    --accent-deep: #E8380F;
+    --accent-soft: #FFE2DA;
+    --spark: #FFC53D;
+    --spark-soft: #FFF1D2;
+    --ink-on-bright: #17181A;
+    --font-display: 'Anton', 'Arial Narrow', sans-serif;
+    --font-body: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    --font-data: 'Space Mono', 'SFMono-Regular', Consolas, monospace;
+    color-scheme: light;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 { font-family: var(--font-body); font-weight: 900; text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+  p { margin: 0; }
+  a { color: inherit; }
+  button { font: inherit; }
+  .accent { color: var(--accent); }
+  .num { font-family: var(--font-data); font-variant-numeric: tabular-nums; }
+
+  .wrap { max-width: 1160px; margin: 0 auto; padding-inline: 20px; }
+
+  /* ---------- nav ---------- */
+  .nav {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50;
+    background: rgba(242,242,239,0.88); backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-row { display: flex; align-items: center; gap: 20px; padding-block: 14px 10px; }
+  .brand { display: flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 20px; letter-spacing: 0.01em; flex: none; }
+  .brand svg { width: 26px; height: 26px; color: var(--accent); flex: none; }
+  .search-wrap { position: relative; flex: 1 1 auto; max-width: 460px; }
+  .search-wrap svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-faint); }
+  .search-wrap input {
+    width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 999px;
+    padding: 10px 16px 10px 38px; font-family: var(--font-body); font-size: 13.5px; color: var(--text);
+  }
+  .search-wrap input::placeholder { color: var(--text-faint); }
+  .search-wrap input:focus { outline: none; border-color: var(--accent); }
+  .nav-cta { display: flex; gap: 8px; flex: none; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 9px 16px; border-radius: 999px; font-size: 13.5px; font-weight: 700;
+    text-decoration: none; border: 1px solid transparent; cursor: pointer; white-space: nowrap;
+    font-family: var(--font-body);
+  }
+  .btn-ghost { background: transparent; border-color: var(--line); color: var(--text); }
+  .btn-ghost:hover { border-color: var(--text-soft); }
+  .btn-accent { background: var(--accent); color: #fff; }
+  .btn-accent:hover { background: var(--accent-deep); }
+  .btn-light { background: var(--text); color: var(--bg); }
+  .btn-light:hover { background: #DADAD8; }
+  @media (max-width: 640px) { .nav-cta .btn-ghost { display: none; } }
+
+  .nav-chips { display: flex; gap: 8px; overflow-x: auto; padding-block: 2px 12px; scrollbar-width: none; }
+  .nav-chips::-webkit-scrollbar { display: none; }
+  .nav-chip {
+    flex: none; font-size: 12.5px; font-weight: 700; padding: 7px 13px; border-radius: 999px;
+    background: var(--surface); border: 1px solid var(--line); color: var(--text-soft); text-decoration: none;
+  }
+  .nav-chip:hover { border-color: var(--text-soft); color: var(--text); }
+
+  /* ---------- hero ---------- */
+  .hero { padding-block: 40px 40px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-data); font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--text-faint); margin-bottom: 18px;
+  }
+  .eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .hero h1 { font-size: clamp(30px, 5vw, 46px); line-height: 1.22; max-width: 600px; }
+  .hero .lede { font-size: 15.5px; color: var(--text-soft); max-width: 46ch; margin-top: 16px; }
+  .hero-actions { display: flex; gap: 10px; margin-top: 22px; flex-wrap: wrap; }
+  .hero-actions .btn { padding: 12px 22px; font-size: 14.5px; }
+
+  .stats-row {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+    background: var(--line); border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+    margin-top: 36px;
+  }
+  .stat { background: var(--surface); padding: 18px 18px; }
+  .stat .v { font-family: var(--font-data); font-size: clamp(19px, 3vw, 25px); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .stat .l { font-size: 11.5px; color: var(--text-soft); margin-top: 6px; }
+  .stats-note { font-size: 11.5px; color: var(--text-faint); margin-top: 10px; }
+  @media (max-width: 640px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
+
+  /* ---------- poster (shared: hero slides + feed card images) ---------- */
+  .poster { position: relative; overflow: hidden; color: #fff; }
+  .poster::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(0deg, rgba(5,5,6,0.8) 0%, rgba(5,5,6,0.24) 48%, rgba(5,5,6,0) 72%);
+  }
+  .poster-1 { background: linear-gradient(135deg, #202124, #050506 55%, #3A1C12 130%); }
+  .poster-2 { background: linear-gradient(135deg, #FF6A45, #E8380F 55%, #17181A 135%); }
+  .poster-3 { background: linear-gradient(135deg, #FFD98C, #FFC53D 50%, #17181A 140%); }
+  .poster-4 { background: linear-gradient(135deg, #17181A, #17181A 45%, #FF4A2B 130%); }
+  .poster-5 { background: linear-gradient(135deg, #FFDFA0, #FFC53D 45%, #17181A 135%); }
+  .poster-6 { background: linear-gradient(135deg, #3A1C12, #17181A 60%, #FF9F2B 150%); }
+  .poster-top {
+    position: absolute; top: 12px; left: 12px; right: 12px; z-index: 1;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .poster-tag {
+    font-family: var(--font-data); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+    font-weight: 700; color: #fff; background: rgba(255,255,255,0.2); backdrop-filter: blur(6px);
+    padding: 4px 9px; border-radius: 999px;
+  }
+  .poster-dday {
+    font-family: var(--font-data); font-size: 11px; font-weight: 700; color: var(--ink-on-bright);
+    background: var(--spark); padding: 4px 9px; border-radius: 999px;
+  }
+
+  /* ---------- hero carousel ---------- */
+  .hero-carousel { margin-top: 30px; }
+  .carousel-track {
+    display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory;
+    padding-block: 2px 4px; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    padding-inline: calc((100% - 76%) / 2); scroll-padding-inline: calc((100% - 76%) / 2);
+  }
+  .carousel-track::-webkit-scrollbar { display: none; }
+  .slide { flex: 0 0 76%; scroll-snap-align: center; border-radius: 22px; aspect-ratio: 16 / 8.5; }
+  .slide-content { position: absolute; left: 22px; right: 22px; bottom: 20px; z-index: 1; }
+  .slide-period { font-family: var(--font-data); font-size: 12px; font-variant-numeric: tabular-nums; opacity: 0.85; margin-bottom: 6px; }
+  .slide-title { font-family: var(--font-body); font-weight: 900; font-size: clamp(19px, 2.6vw, 25px); line-height: 1.3; margin: 0 0 6px; }
+  .slide-loc { font-size: 12.5px; opacity: 0.82; }
+
+  .carousel-nav { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 16px; }
+  .dots { display: flex; gap: 7px; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; border: none; padding: 0; background: var(--line); cursor: pointer; }
+  .dot.on { background: var(--accent); width: 20px; border-radius: 4px; transition: width .2s ease; }
+  .carousel-counter { font-family: var(--font-data); font-size: 11.5px; color: var(--text-faint); font-variant-numeric: tabular-nums; }
+
+  @media (max-width: 720px) {
+    .carousel-track { padding-inline: calc((100% - 86%) / 2); scroll-padding-inline: calc((100% - 86%) / 2); }
+    .slide { flex-basis: 86%; aspect-ratio: 16 / 11; }
+  }
+
+  /* ---------- section shell ---------- */
+  .section { padding-block: 48px; }
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+  .section-label { font-family: var(--font-data); font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-faint); }
+  .section-title { font-size: 24px; margin-top: 6px; }
+  .section-link { font-size: 13px; font-weight: 700; color: var(--text-soft); text-decoration: none; white-space: nowrap; }
+  .section-link:hover { color: var(--text); }
+
+  /* ---------- region tabs ---------- */
+  .region-tabs { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 20px; scrollbar-width: none; }
+  .region-tabs::-webkit-scrollbar { display: none; }
+  .region-tab {
+    flex: none; font-size: 12.5px; font-weight: 700; padding: 8px 14px; border-radius: 999px;
+    background: var(--surface); border: 1px solid var(--line); color: var(--text-soft); cursor: pointer;
+  }
+  .region-tab.on { background: var(--text); border-color: var(--text); color: var(--bg); }
+
+  /* ---------- feed ---------- */
+  .feed-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .feed-card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
+    display: flex; flex-direction: column; transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .feed-card:hover { transform: translateY(-3px); box-shadow: 0 14px 28px rgba(23,24,26,0.12); }
+  .card-image { aspect-ratio: 4 / 3; }
+  .card-body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 8px; }
+  .card-body h3 { font-size: 15.5px; line-height: 1.35; }
+  .card-meta { font-size: 12px; color: var(--text-soft); }
+  .card-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+  .stat-mini { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--text-faint); }
+  .stat-mini svg { width: 13px; height: 13px; }
+  .like-btn {
+    display: inline-flex; align-items: center; gap: 4px; background: none; border: none; padding: 0;
+    font-size: 12px; color: var(--text-faint); cursor: pointer;
+  }
+  .like-btn svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; }
+  .like-btn.on { color: var(--accent); }
+  .like-btn.on svg { fill: var(--accent); stroke: var(--accent); }
+  @media (max-width: 920px) { .feed-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .feed-grid { grid-template-columns: 1fr; } }
+
+  /* ---------- alerts ---------- */
+  .alerts-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 40px; align-items: start; }
+  .alerts-col { display: flex; flex-direction: column; gap: 16px; }
+  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px; }
+  .panel p.hint { font-size: 13px; color: var(--text-soft); margin-bottom: 16px; }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    font-size: 13px; font-weight: 700; padding: 9px 14px; border-radius: 999px;
+    border: 1.5px solid var(--line); color: var(--text-soft); background: var(--surface-2);
+  }
+  .chip.on { border-color: var(--accent); background: var(--accent); color: #fff; }
+  .keyword-follow {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line);
+  }
+  .keyword-follow .who { font-size: 12.5px; color: var(--text-soft); }
+  .keyword-follow .who b { color: var(--text); font-family: var(--font-data); font-variant-numeric: tabular-nums; }
+
+  .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .cal-head span { font-size: 13.5px; font-weight: 700; }
+  .cal-head .nav-btn { color: var(--text-faint); font-size: 13px; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
+  .cal-dow { font-size: 10.5px; color: var(--text-faint); padding-block: 4px; }
+  .cal-cell { position: relative; font-family: var(--font-data); font-size: 11.5px; color: var(--text-soft); padding-block: 7px 10px; border-radius: 8px; }
+  .cal-cell.out { color: var(--text-faint); opacity: 0.5; }
+  .cal-cell.today { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+  .cal-cell.evt::after {
+    content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
+    width: 4px; height: 4px; border-radius: 50%; background: var(--spark);
+  }
+  .cal-note { font-size: 11.5px; color: var(--text-faint); margin-top: 12px; display: flex; align-items: center; gap: 6px; }
+  .cal-note .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--spark); flex: none; }
+
+  .phone { max-width: 300px; margin-inline: auto; }
+  .phone-frame {
+    background: #050506; border-radius: 34px; padding: 14px; border: 1px solid var(--line);
+    box-shadow: 0 24px 48px rgba(0,0,0,0.45);
+  }
+  .phone-screen { background: var(--bg); border-radius: 22px; padding: 16px 12px 20px; min-height: 360px; }
+  .phone-time { font-family: var(--font-data); font-size: 12px; color: var(--text-soft); text-align: center; margin-bottom: 14px; }
+  .notif { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px; display: flex; gap: 10px; }
+  .notif + .notif { margin-top: 10px; }
+  .notif-icon {
+    width: 30px; height: 30px; border-radius: 9px; background: var(--bg); flex: none;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .notif-icon svg { width: 16px; height: 16px; color: var(--accent); }
+  .notif-body .app { font-size: 10.5px; font-weight: 700; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.06em; }
+  .notif-body .title { font-size: 13px; font-weight: 900; margin-top: 2px; }
+  .notif-body .desc { font-size: 12px; color: var(--text-soft); margin-top: 3px; line-height: 1.45; }
+  @media (max-width: 860px) { .alerts-grid { grid-template-columns: 1fr; } .phone { max-width: 320px; } }
+
+  /* ---------- time sale ---------- */
+  .timesale { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 36px; }
+  .timesale .section-label { color: var(--accent-deep); }
+  .timesale .lede { font-size: 13.5px; color: var(--text-soft); max-width: 52ch; margin-top: 6px; }
+  .sale-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 26px; }
+  .sale-card { background: var(--surface-2); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .sale-off {
+    align-self: flex-start; font-family: var(--font-data); font-weight: 700; font-size: 12px;
+    color: var(--ink-on-bright); background: var(--spark); padding: 3px 9px; border-radius: 999px;
+  }
+  .sale-brand { font-size: 11px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
+  .sale-name { font-size: 14.5px; font-weight: 900; line-height: 1.35; }
+  .sale-price { display: flex; align-items: baseline; gap: 8px; margin-top: auto; }
+  .sale-price .was { font-family: var(--font-data); font-size: 12px; color: var(--text-faint); text-decoration: line-through; }
+  .sale-price .now { font-family: var(--font-data); font-size: 17px; font-weight: 700; color: var(--text); }
+  .sale-foot { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--text-faint); border-top: 1px solid var(--line); padding-top: 10px; }
+  .sale-foot .clock { font-family: var(--font-data); color: var(--accent-deep); font-variant-numeric: tabular-nums; }
+  @media (max-width: 920px) { .sale-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .sale-grid { grid-template-columns: 1fr; } .timesale { padding: 26px 18px; } }
+
+  /* ---------- up subsections ---------- */
+  .up-subhead { display: flex; align-items: baseline; justify-content: space-between; margin: 36px 0 16px; }
+  .up-subhead:first-of-type { margin-top: 26px; }
+  .up-subhead h3 { font-size: 17px; }
+  .sale-tag {
+    font-family: var(--font-data); font-size: 9.5px; letter-spacing: 0.05em; text-transform: uppercase;
+    font-weight: 700; color: var(--text-faint); background: var(--surface); border: 1px solid var(--line);
+    padding: 2px 7px; border-radius: 999px; align-self: flex-start;
+  }
+
+  .survey-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .survey-card { background: var(--surface-2); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+  .survey-card .q { font-size: 14px; font-weight: 900; line-height: 1.4; }
+  .survey-bar { height: 6px; border-radius: 999px; background: var(--surface); overflow: hidden; }
+  .survey-bar span { display: block; height: 100%; background: var(--accent); }
+  .survey-lead { font-size: 11.5px; color: var(--text-soft); }
+  .survey-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-faint); }
+  @media (max-width: 860px) { .survey-grid { grid-template-columns: 1fr; } }
+
+  .news-list { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+  .news-item { display: flex; gap: 16px; align-items: baseline; padding: 15px 0; border-bottom: 1px solid var(--line); }
+  .news-item .date { font-family: var(--font-data); font-size: 11px; color: var(--text-faint); flex: none; width: 56px; }
+  .news-item .ntag {
+    font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 999px; flex: none;
+    background: var(--surface-2); color: var(--text-soft);
+  }
+  .news-item .headline { font-size: 13.5px; font-weight: 700; flex: 1 1 auto; }
+  @media (max-width: 640px) { .news-item { flex-wrap: wrap; } .news-item .date { width: auto; } }
+
+  /* ---------- cta footer ---------- */
+  .cta-footer {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 20px;
+    padding: 36px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;
+  }
+  .cta-footer h2 { font-size: 22px; line-height: 1.4; max-width: 380px; }
+  .cta-form { display: flex; gap: 8px; flex-wrap: wrap; }
+  .cta-form input {
+    font-family: var(--font-body); font-size: 14px; padding: 12px 14px; border-radius: 999px;
+    border: 1.5px solid var(--line); min-width: 220px; background: var(--surface-2); color: var(--text);
+  }
+  .cta-form input::placeholder { color: var(--text-faint); }
+  .cta-form input:focus { outline: none; border-color: var(--accent); }
+
+  footer { padding-block: 32px 60px; text-align: center; }
+  footer p { font-size: 12px; color: var(--text-faint); }
+
+  /* ---------- off/up mode switch ---------- */
+  .mode-switch {
+    position: relative; display: inline-flex; background: var(--surface); border: 1px solid var(--line);
+    border-radius: 999px; padding: 4px;
+  }
+  .mode-thumb {
+    position: absolute; top: 4px; left: 4px; width: calc(50% - 4px); height: calc(100% - 8px);
+    border-radius: 999px; background: var(--accent); transition: transform .25s ease, background .25s ease; z-index: 0;
+  }
+  .mode-switch[data-active="up"] .mode-thumb { transform: translateX(100%); background: var(--spark); }
+  .mode-btn {
+    position: relative; z-index: 1; border: none; background: none; cursor: pointer;
+    font-family: var(--font-display); letter-spacing: 0.02em; color: var(--text-soft); border-radius: 999px;
+    padding: 10px 30px; font-size: 15px; width: 104px;
+  }
+  .mode-btn.on { color: var(--ink-on-bright); }
+
+  .mode-hero { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; margin: 28px 0 8px; }
+  .mode-hero .hint { font-size: 12.5px; color: var(--text-faint); }
+  .mode-hero .mode-btn { width: 96px; padding-block: 9px; font-size: 14px; }
+
+  .nav-switch-row { display: flex; justify-content: center; padding-block: 2px 12px; }
+  .nav-switch-row .mode-btn { width: 84px; padding-block: 7px; font-size: 12.5px; }
+</style>
+
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="cup" viewBox="0 0 120 120">
+    <path d="M 98.3 27.85 A 50 50 0 1 0 98.3 92.15 L 82.98 79.3 A 30 30 0 1 1 82.98 40.7 Z" fill="currentColor"/>
+    <text x="93" y="77" font-family="Anton" font-size="34" fill="currentColor" text-anchor="middle">UP</text>
+  </symbol>
+  <symbol id="search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.2" y2="16.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="eye" viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.1C0.3 8.6 1.7 5 5.3 4.2 7.6 3.7 10 5 12 7.6 14 5 16.4 3.7 18.7 4.2 22.3 5 23.7 8.6 22 11.9 19.5 16.4 12 21 12 21z"/></symbol>
+</svg>
+
+<nav class="nav">
+  <div class="wrap nav-row">
+    <div class="brand">
+      <svg viewBox="0 0 120 120"><use href="#cup"/></svg>
+      OFF <span class="accent">UP</span>
+    </div>
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24"><use href="#search"/></svg>
+      <input type="text" placeholder="지역, 행사 이름, 테마로 검색해보세요">
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-ghost" href="#">로그인</a>
+      <a class="btn btn-accent" href="#">회원가입</a>
+    </div>
+  </div>
+  <div class="wrap nav-switch-row">
+    <div class="mode-switch" id="navModeSwitch" data-active="off">
+      <span class="mode-thumb"></span>
+      <button class="mode-btn on" data-mode="off">OFF</button>
+      <button class="mode-btn" data-mode="up">UP</button>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <section class="hero">
+    <p class="eyebrow">Platform concept · Demo</p>
+    <h1>오프라인에서 지금<br>열리는 모든 것</h1>
+    <p class="lede">팝업스토어, 지역 축제, 신규 브랜드 오픈, 오프라인 이벤트를 한 곳에 모았어요. 관심사를 등록하면 놓치기 전에 알림으로 알려드려요.</p>
+    <div class="hero-actions">
+      <a class="btn btn-accent" href="#">무료로 회원가입</a>
+      <a class="btn btn-ghost" href="#off">행사 둘러보기</a>
+    </div>
+
+    <div class="mode-hero">
+      <div class="mode-switch" id="heroModeSwitch" data-active="off">
+        <span class="mode-thumb"></span>
+        <button class="mode-btn on" data-mode="off">OFF</button>
+        <button class="mode-btn" data-mode="up">UP</button>
+      </div>
+      <p class="hint">오프라인 행사는 OFF, 핫딜·설문·소식 같은 온라인 정보는 UP에서 확인하세요.</p>
+    </div>
+
+    <div class="hero-carousel">
+      <div class="carousel-track" id="carouselTrack">
+        <div class="slide poster poster-1">
+          <div class="poster-top"><span class="poster-tag">팝업</span><span class="poster-dday">D-2</span></div>
+          <div class="slide-content">
+            <p class="slide-period">09.30 – 10.05</p>
+            <h3 class="slide-title">텐트공작소 캠핑 팝업</h3>
+            <p class="slide-loc">성수동 어니언팩토리</p>
+          </div>
+        </div>
+        <div class="slide poster poster-2">
+          <div class="poster-top"><span class="poster-tag">콘서트</span><span class="poster-dday">D-14</span></div>
+          <div class="slide-content">
+            <p class="slide-period">10.12 – 10.14</p>
+            <h3 class="slide-title">자라섬 재즈페스티벌</h3>
+            <p class="slide-loc">경기 가평 · 얼리버드 티켓 오늘 오픈</p>
+          </div>
+        </div>
+        <div class="slide poster poster-3">
+          <div class="poster-top"><span class="poster-tag">신규매장</span><span class="poster-dday">D-5</span></div>
+          <div class="slide-content">
+            <p class="slide-period">10.03 오픈</p>
+            <h3 class="slide-title">무신사 스탠다드 홍대점</h3>
+            <p class="slide-loc">서울 홍대 · 오픈 기념 전 품목 20% 할인</p>
+          </div>
+        </div>
+        <div class="slide poster poster-4">
+          <div class="poster-top"><span class="poster-tag">팝업</span><span class="poster-dday">D-1</span></div>
+          <div class="slide-content">
+            <p class="slide-period">09.29 – 10.12</p>
+            <h3 class="slide-title">아더에러 × 카카오프렌즈</h3>
+            <p class="slide-loc">성수동 LCDC · 하루 2회 입장 제한</p>
+          </div>
+        </div>
+        <div class="slide poster poster-5">
+          <div class="poster-top"><span class="poster-tag">스포츠경기</span><span class="poster-dday">D-20</span></div>
+          <div class="slide-content">
+            <p class="slide-period">10.18 – 10.19</p>
+            <h3 class="slide-title">해운대 서핑페스타</h3>
+            <p class="slide-loc">부산 해운대 · 국내 최대 규모 서핑 대회</p>
+          </div>
+        </div>
+      </div>
+      <div class="carousel-nav">
+        <div class="dots" id="carouselDots"></div>
+        <span class="carousel-counter" id="carouselCounter">01 / 05</span>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat"><div class="v num">27,412</div><div class="l">가입 회원</div></div>
+      <div class="stat"><div class="v num">312</div><div class="l">이번 달 등록된 행사</div></div>
+      <div class="stat"><div class="v num">18</div><div class="l">진행 중인 타임세일</div></div>
+      <div class="stat"><div class="v num">94,208</div><div class="l">누적 알림 발송</div></div>
+    </div>
+    <p class="stats-note">* 데모용 가상 데이터입니다.</p>
+  </section>
+
+  <section class="section" id="off">
+    <div class="section-head">
+      <div>
+        <p class="section-label">OFF · 오프라인</p>
+        <h2 class="section-title">전국에서 지금 열리는 오프라인</h2>
+      </div>
+      <a class="section-link" href="#">전체 행사 보기 →</a>
+    </div>
+
+    <div class="region-tabs" id="offTabs">
+      <button class="region-tab on" data-category="all">전체</button>
+      <button class="region-tab" data-category="concert">콘서트</button>
+      <button class="region-tab" data-category="expo">전시/박람회</button>
+      <button class="region-tab" data-category="popup">팝업</button>
+      <button class="region-tab" data-category="overseas">내한공연</button>
+      <button class="region-tab" data-category="musical">뮤지컬</button>
+      <button class="region-tab" data-category="market">플리마켓</button>
+      <button class="region-tab" data-category="saleoff">브랜드세일</button>
+      <button class="region-tab" data-category="local">지역행사</button>
+      <button class="region-tab" data-category="newstore">신규매장</button>
+      <button class="region-tab" data-category="sports">스포츠경기</button>
+    </div>
+
+    <div class="feed-grid" id="feedGrid">
+      <div class="feed-card" data-category="popup">
+        <div class="card-image poster poster-1">
+          <div class="poster-top"><span class="poster-tag">팝업</span><span class="poster-dday">D-2</span></div>
+        </div>
+        <div class="card-body">
+          <h3>텐트공작소 캠핑 팝업</h3>
+          <p class="card-meta">성수동 어니언팩토리 · 9.30 – 10.05</p>
+          <div class="card-foot">
+            <span class="stat-mini"><svg viewBox="0 0 24 24"><use href="#eye"/></svg><span class="num">1,663</span></span>
+            <button class="like-btn" data-count="86"><svg viewBox="0 0 24 24"><use href="#heart"/></svg><span class="num like-count">86</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="feed-card" data-category="concert">
+        <div class="card-image poster poster-2">
+          <div class="poster-top"><span class="poster-tag">콘서트</span><span class="poster-dday">D-14</span></div>
+        </div>
+        <div class="card-body">
+          <h3>자라섬 재즈페스티벌 라인업 공개</h3>
+          <p class="card-meta">경기 가평 · 10.12 – 10.14</p>
+          <div class="card-foot">
+            <span class="stat-mini"><svg viewBox="0 0 24 24"><use href="#eye"/></svg><span class="num">2,890</span></span>
+            <button class="like-btn" data-count="214"><svg viewBox="0 0 24 24"><use href="#heart"/></svg><span class="num like-count">214</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="feed-card" data-category="newstore">
+        <div class="card-image poster poster-3">
+          <div class="poster-top"><span class="poster-tag">신규매장</span><span class="poster-dday">D-5</span></div>
+        </div>
+        <div class="card-body">
+          <h3>무신사 스탠다드 홍대점 오픈</h3>
+          <p class="card-meta">서울 홍대 · 10.03 오픈</p>
+          <div class="card-foot">
+            <span class="stat-mini"><svg viewBox="0 0 24 24"><use href="#eye"/></svg><span class="num">1,140</span></span>
+            <button class="like-btn" data-count="52"><svg viewBox="0 0 24 24"><use href="#heart"/></svg><span class="num like-count">52</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="feed-card" data-category="popup">
+        <div class="card-image poster poster-4">
+          <div class="poster-top"><span class="poster-tag">팝업</span><span class="poster-dday">D-1</span></div>
+        </div>
+        <div class="card-body">
+          <h3>아더에러 × 카카오프렌즈 협업전</h3>
+          <p class="card-meta">성수동 LCDC · 9.29 – 10.12</p>
+          <div class="card-foot">
+            <span class="stat-mini"><svg viewBox="0 0 24 24"><use href="#eye"/></svg><span class="num">4,732</span></span>
+            <button class="like-btn" data-count="398"><svg viewBox="0 0 24 24"><use href="#heart"/></svg><span class="num like-count">398</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="feed-card" data-category="market">
+        <div class="card-image poster poster-6">
+          <div class="poster-top"><span class="poster-tag">플리마켓</span><span class="poster-dday">D-7</span></div>
+        </div>
+        <div class="card-body">
+          <h3>을지로 인쇄골목 야시장</h3>
+          <p class="card-meta">서울 을지로3가 · 10.05 저녁</p>
+          <div class="card-foot">
+            <span class="stat-mini"><svg viewBox="0 0 24 24"><use href="#eye"/></svg><span class="num">760</span></span>
+            <button class="like-btn" data-count="41"><svg viewBox="0 0 24 24"><use href="#heart"/></svg><span class="num like-count">41</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="feed-card" data-category="sports">
+        <div class="card-image poster poster-5">
+          <div class="poster-top"><span class="poster-tag">스포츠경기</span><span class="poster-dday">D-20</span></div>
+        </div>
+        <div class="card-body">
+          <h3>해운대 서핑페스타</h3>
+          <p class="card-meta">부산 해운대 · 10.18 – 10.19</p>
+          <div class="card-foot">
+            <span class="stat-mini"><svg viewBox="0 0 24 24"><use href="#eye"/></svg><span class="num">985</span></span>
+            <button class="like-btn" data-count="63"><svg viewBox="0 0 24 24"><use href="#heart"/></svg><span class="num like-count">63</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="feed-card" data-category="expo">
+        <div class="card-image poster poster-3">
+          <div class="poster-top"><span class="poster-tag">전시/박람회</span><span class="poster-dday">D-9</span></div>
+        </div>
+        <div class="card-body">
+          <h3>2026 서울카페쇼</h3>
+          <p class="card-meta">서울 코엑스 · 11.05 – 11.08</p>
+          <div class="card-foot">
+            <span class="stat-mini"><svg viewBox="0 0 24 24"><use href="#eye"/></svg><span class="num">2,104</span></span>
+            <button class="like-btn" data-count="97"><svg viewBox="0 0 24 24"><use href="#heart"/></svg><span class="num like-count">97</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="feed-card" data-category="overseas">
+        <div class="card-image poster poster-1">
+          <div class="poster-top"><span class="poster-tag">내한공연</span><span class="poster-dday">D-25</span></div>
+        </div>
+        <div class="card-body">
+          <h3>UK 드림팝 밴드 첫 단독 내한공연</h3>
+          <p class="card-meta">서울 올림픽공원 핸드볼경기장 · 11.21</p>
+          <div class="card-foot">
+            <span class="stat-mini"><svg viewBox="0 0 24 24"><use href="#eye"/></svg><span class="num">3,318</span></span>
+            <button class="like-btn" data-count="176"><svg viewBox="0 0 24 24"><use href="#heart"/></svg><span class="num like-count">176</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="feed-card" data-category="musical">
+        <div class="card-image poster poster-4">
+          <div class="poster-top"><span class="poster-tag">뮤지컬</span><span class="poster-dday">D-11</span></div>
+        </div>
+        <div class="card-body">
+          <h3>뮤지컬 &lt;별빛정원&gt; 프리뷰 오픈</h3>
+          <p class="card-meta">서울 대학로 · 10.18 프리뷰</p>
+          <div class="card-foot">
+            <span class="stat-mini"><svg viewBox="0 0 24 24"><use href="#eye"/></svg><span class="num">1,452</span></span>
+            <button class="like-btn" data-count="88"><svg viewBox="0 0 24 24"><use href="#heart"/></svg><span class="num like-count">88</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="feed-card" data-category="saleoff">
+        <div class="card-image poster poster-5">
+          <div class="poster-top"><span class="poster-tag">브랜드세일</span><span class="poster-dday">D-3</span></div>
+        </div>
+        <div class="card-body">
+          <h3>나이키 시즌오프 팝업세일</h3>
+          <p class="card-meta">더현대 서울 · 10.10 – 10.20</p>
+          <div class="card-foot">
+            <span class="stat-mini"><svg viewBox="0 0 24 24"><use href="#eye"/></svg><span class="num">2,567</span></span>
+            <button class="like-btn" data-count="143"><svg viewBox="0 0 24 24"><use href="#heart"/></svg><span class="num like-count">143</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="feed-card" data-category="local">
+        <div class="card-image poster poster-6">
+          <div class="poster-top"><span class="poster-tag">지역행사</span><span class="poster-dday">D-30</span></div>
+        </div>
+        <div class="card-body">
+          <h3>대구 치맥페스티벌</h3>
+          <p class="card-meta">대구 두류공원 · 11.12 – 11.15</p>
+          <div class="card-foot">
+            <span class="stat-mini"><svg viewBox="0 0 24 24"><use href="#eye"/></svg><span class="num">3,980</span></span>
+            <button class="like-btn" data-count="251"><svg viewBox="0 0 24 24"><use href="#heart"/></svg><span class="num like-count">251</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="up">
+    <div class="section-head">
+      <div>
+        <p class="section-label">UP · 온라인</p>
+        <h2 class="section-title">온라인에서 바로</h2>
+      </div>
+    </div>
+
+    <div class="timesale">
+      <div class="up-subhead" style="margin-top:0;">
+        <h3>핫딜 · 브랜드세일</h3>
+        <span class="section-link">전체 보기 →</span>
+      </div>
+
+      <div class="sale-grid">
+        <div class="sale-card">
+          <span class="sale-tag">12시간 핫딜</span>
+          <span class="sale-off">-40%</span>
+          <span class="sale-brand">텐트공작소</span>
+          <p class="sale-name">2인용 캠핑 텐트 시즌오프</p>
+          <div class="sale-price"><span class="was num">289,000원</span><span class="now num">173,400원</span></div>
+          <div class="sale-foot"><span>재고 12개</span><span class="clock num">07:22:07 남음</span></div>
+        </div>
+
+        <div class="sale-card">
+          <span class="sale-tag">12시간 핫딜</span>
+          <span class="sale-off">-30%</span>
+          <span class="sale-brand">무신사 스탠다드</span>
+          <p class="sale-name">홍대점 오픈 기념 후드 집업</p>
+          <div class="sale-price"><span class="was num">79,000원</span><span class="now num">55,300원</span></div>
+          <div class="sale-foot"><span>재고 41개</span><span class="clock num">02:48:51 남음</span></div>
+        </div>
+
+        <div class="sale-card">
+          <span class="sale-tag">12시간 핫딜</span>
+          <span class="sale-off">-40%</span>
+          <span class="sale-brand">아더에러 × 카카오프렌즈</span>
+          <p class="sale-name">협업 한정판 에코백 세트</p>
+          <div class="sale-price"><span class="was num">45,000원</span><span class="now num">27,000원</span></div>
+          <div class="sale-foot"><span>재고 8개</span><span class="clock num">04:11:36 남음</span></div>
+        </div>
+
+        <div class="sale-card">
+          <span class="sale-tag">12시간 핫딜</span>
+          <span class="sale-off">-40%</span>
+          <span class="sale-brand">해운대 서핑페스타</span>
+          <p class="sale-name">공식 기획전 래시가드</p>
+          <div class="sale-price"><span class="was num">68,000원</span><span class="now num">40,800원</span></div>
+          <div class="sale-foot"><span>재고 23개</span><span class="clock num">11:05:14 남음</span></div>
+        </div>
+
+        <div class="sale-card">
+          <span class="sale-tag">브랜드세일</span>
+          <span class="sale-off">-40%</span>
+          <span class="sale-brand">나이키</span>
+          <p class="sale-name">시즌오프 러닝화 라인</p>
+          <div class="sale-price"><span class="was num">129,000원</span><span class="now num">77,400원</span></div>
+          <div class="sale-foot"><span>재고 64개</span><span>~10.15까지</span></div>
+        </div>
+
+        <div class="sale-card">
+          <span class="sale-tag">브랜드세일</span>
+          <span class="sale-off">-20%</span>
+          <span class="sale-brand">무신사 스탠다드</span>
+          <p class="sale-name">가을 신상 전상품 쿠폰</p>
+          <div class="sale-price"><span class="was num">59,000원</span><span class="now num">47,200원</span></div>
+          <div class="sale-foot"><span>재고 다수</span><span>~10.20까지</span></div>
+        </div>
+      </div>
+
+      <div class="up-subhead">
+        <h3>설문조사</h3>
+      </div>
+      <div class="survey-grid">
+        <div class="survey-card">
+          <p class="q">올해 가장 기대되는 지역축제는?</p>
+          <p class="survey-lead">1위 · 대구 치맥페스티벌 42%</p>
+          <div class="survey-bar"><span style="width:42%"></span></div>
+          <div class="survey-meta"><span>참여 3,204명</span><span class="num">D-5 마감</span></div>
+        </div>
+        <div class="survey-card">
+          <p class="q">선호하는 팝업 테마는?</p>
+          <p class="survey-lead">1위 · 콜라보/굿즈 55%</p>
+          <div class="survey-bar"><span style="width:55%"></span></div>
+          <div class="survey-meta"><span>참여 1,890명</span><span class="num">D-12 마감</span></div>
+        </div>
+        <div class="survey-card">
+          <p class="q">다음 시즌 콜라보 브랜드 추천</p>
+          <p class="survey-lead">1위 · 아더에러 38%</p>
+          <div class="survey-bar"><span style="width:38%"></span></div>
+          <div class="survey-meta"><span>참여 940명</span><span class="num">D-3 마감</span></div>
+        </div>
+      </div>
+
+      <div class="up-subhead">
+        <h3>콜라보 소식</h3>
+      </div>
+      <div class="news-list">
+        <div class="news-item">
+          <span class="date num">10.05</span>
+          <span class="ntag">콜라보</span>
+          <span class="headline">아더에러 × 카카오프렌즈, 2탄 라인업 공개 예고</span>
+        </div>
+        <div class="news-item">
+          <span class="date num">10.02</span>
+          <span class="ntag">신제품</span>
+          <span class="headline">텐트공작소 × 무신사 스탠다드, 캠핑 캡슐 컬렉션 출시</span>
+        </div>
+        <div class="news-item">
+          <span class="date num">09.29</span>
+          <span class="ntag">제휴</span>
+          <span class="headline">자라섬 재즈페스티벌, 공식 굿즈 온라인 단독 판매 시작</span>
+        </div>
+        <div class="news-item">
+          <span class="date num">09.26</span>
+          <span class="ntag">브랜드</span>
+          <span class="headline">나이키, 더현대 서울 시즌오프 팝업 다음 주 오픈 예고</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="alerts">
+    <div class="section-head">
+      <div>
+        <p class="section-label">관심사 알림</p>
+        <h2 class="section-title">키워드를 등록하면, 놓치기 전에 알려드려요</h2>
+      </div>
+    </div>
+
+    <div class="alerts-grid">
+      <div class="alerts-col">
+        <div class="panel">
+          <p class="hint">관심 있는 카테고리를 선택하면, 일치하는 행사가 등록되거나 오픈일이 가까워질 때 알림을 보내드려요.</p>
+          <div class="chip-row">
+            <span class="chip on">팝업스토어</span>
+            <span class="chip on">페스티벌</span>
+            <span class="chip on">캠핑/아웃도어</span>
+            <span class="chip">신규매장</span>
+            <span class="chip">플리마켓</span>
+            <span class="chip">전시·사진전</span>
+            <span class="chip">뮤지컬</span>
+            <span class="chip">스포츠경기</span>
+            <span class="chip">지역축제</span>
+            <span class="chip">핫딜</span>
+          </div>
+          <div class="keyword-follow">
+            <span class="who">현재 &ldquo;캠핑/아웃도어&rdquo;를 구독 중인 회원</span>
+            <b class="num">1,204명</b>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="cal-head"><span>2026년 10월</span><span class="nav-btn num">‹ ›</span></div>
+          <div class="cal-grid">
+            <span class="cal-dow">월</span><span class="cal-dow">화</span><span class="cal-dow">수</span><span class="cal-dow">목</span><span class="cal-dow">금</span><span class="cal-dow">토</span><span class="cal-dow">일</span>
+            <span class="cal-cell out">28</span><span class="cal-cell out">29</span><span class="cal-cell out">30</span><span class="cal-cell">1</span><span class="cal-cell">2</span><span class="cal-cell">3</span><span class="cal-cell">4</span>
+            <span class="cal-cell">5</span><span class="cal-cell">6</span><span class="cal-cell today">7</span><span class="cal-cell evt">8</span><span class="cal-cell evt">9</span><span class="cal-cell">10</span><span class="cal-cell">11</span>
+            <span class="cal-cell evt">12</span><span class="cal-cell">13</span><span class="cal-cell evt">14</span><span class="cal-cell">15</span><span class="cal-cell">16</span><span class="cal-cell">17</span><span class="cal-cell">18</span>
+            <span class="cal-cell">19</span><span class="cal-cell">20</span><span class="cal-cell evt">21</span><span class="cal-cell">22</span><span class="cal-cell">23</span><span class="cal-cell">24</span><span class="cal-cell">25</span>
+            <span class="cal-cell">26</span><span class="cal-cell evt">27</span><span class="cal-cell evt">28</span><span class="cal-cell">29</span><span class="cal-cell">30</span><span class="cal-cell">31</span><span class="cal-cell out">1</span>
+          </div>
+          <p class="cal-note"><span class="dot"></span>찜한 행사가 있는 날 — 알림을 보내드려요</p>
+        </div>
+      </div>
+
+      <div class="phone">
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <p class="phone-time">오늘 오전 9:00</p>
+
+            <div class="notif">
+              <div class="notif-icon"><svg viewBox="0 0 120 120"><use href="#cup"/></svg></div>
+              <div class="notif-body">
+                <p class="app">OFF UP</p>
+                <p class="title">자라섬 재즈페스티벌 얼리버드 티켓 오늘 오픈</p>
+                <p class="desc">경기 가평 · 관심 키워드 &ldquo;페스티벌&rdquo;</p>
+              </div>
+            </div>
+
+            <div class="notif">
+              <div class="notif-icon"><svg viewBox="0 0 120 120"><use href="#cup"/></svg></div>
+              <div class="notif-body">
+                <p class="app">OFF UP</p>
+                <p class="title">나이키 시즌오프 핫딜, 12시간 남았어요</p>
+                <p class="desc">더현대 서울 · 관심 키워드 &ldquo;핫딜&rdquo;</p>
+              </div>
+            </div>
+
+            <div class="notif">
+              <div class="notif-icon"><svg viewBox="0 0 120 120"><use href="#cup"/></svg></div>
+              <div class="notif-body">
+                <p class="app">OFF UP</p>
+                <p class="title">찜한 팝업, 오늘이 마지막 날이에요</p>
+                <p class="desc">아더에러 × 카카오프렌즈 · 성수동 LCDC</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="cta-footer">
+      <h2>알림 하나로,<br>오프라인을 놓치지 마세요</h2>
+      <form class="cta-form" onsubmit="event.preventDefault()">
+        <input id="cta-email" type="email" placeholder="이메일 주소" required>
+        <button class="btn btn-light" type="submit">무료로 알림받기</button>
+      </form>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <p>OFF UP · 플랫폼 데모 페이지입니다. 행사·상품·회원 수는 서비스 소개를 위한 가상 데이터예요.</p>
+</footer>
+
+<script>
+(function () {
+  var track = document.getElementById('carouselTrack');
+  var dotsWrap = document.getElementById('carouselDots');
+  var counter = document.getElementById('carouselCounter');
+  if (!track || !dotsWrap || !counter) return;
+
+  var slides = Array.prototype.slice.call(track.querySelectorAll('.slide'));
+  var count = slides.length;
+  var current = 0;
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  slides.forEach(function (_, i) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'dot' + (i === 0 ? ' on' : '');
+    b.setAttribute('aria-label', (i + 1) + '번째 슬라이드로 이동');
+    b.addEventListener('click', function () { goTo(i); });
+    dotsWrap.appendChild(b);
+  });
+  var dots = Array.prototype.slice.call(dotsWrap.querySelectorAll('.dot'));
+
+  function pad(n) { return n < 10 ? '0' + n : String(n); }
+
+  function updateUI(i) {
+    dots.forEach(function (d, idx) { d.classList.toggle('on', idx === i); });
+    counter.textContent = pad(i + 1) + ' / ' + pad(count);
+  }
+
+  function goTo(i) {
+    current = (i + count) % count;
+    slides[current].scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', inline: 'center', block: 'nearest' });
+    updateUI(current);
+  }
+
+  var timer = null;
+  function startAuto() {
+    if (reduceMotion) return;
+    clearInterval(timer);
+    timer = setInterval(function () { goTo(current + 1); }, 4500);
+  }
+  function stopAuto() { clearInterval(timer); }
+
+  track.addEventListener('pointerdown', stopAuto);
+  track.addEventListener('pointerup', startAuto);
+  track.addEventListener('mouseenter', stopAuto);
+  track.addEventListener('mouseleave', startAuto);
+
+  var scrollTimeout;
+  track.addEventListener('scroll', function () {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(function () {
+      var trackRect = track.getBoundingClientRect();
+      var center = trackRect.left + trackRect.width / 2;
+      var closest = 0, minDist = Infinity;
+      slides.forEach(function (s, idx) {
+        var r = s.getBoundingClientRect();
+        var dist = Math.abs((r.left + r.width / 2) - center);
+        if (dist < minDist) { minDist = dist; closest = idx; }
+      });
+      current = closest;
+      updateUI(current);
+    }, 100);
+  }, { passive: true });
+
+  updateUI(0);
+  startAuto();
+})();
+
+(function () {
+  var switches = Array.prototype.slice.call(document.querySelectorAll('.mode-switch'));
+  var offSection = document.getElementById('off');
+  var upSection = document.getElementById('up');
+  if (!switches.length || !offSection || !upSection) return;
+
+  function setMode(mode) {
+    switches.forEach(function (sw) {
+      sw.dataset.active = mode;
+      Array.prototype.slice.call(sw.querySelectorAll('.mode-btn')).forEach(function (btn) {
+        btn.classList.toggle('on', btn.dataset.mode === mode);
+      });
+    });
+    offSection.hidden = mode !== 'off';
+    upSection.hidden = mode !== 'up';
+  }
+
+  switches.forEach(function (sw) {
+    sw.querySelectorAll('.mode-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () { setMode(btn.dataset.mode); });
+    });
+  });
+
+  setMode('off');
+})();
+
+(function () {
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.region-tab'));
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.feed-card'));
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      tabs.forEach(function (t) { t.classList.remove('on'); });
+      tab.classList.add('on');
+      var category = tab.dataset.category;
+      cards.forEach(function (card) {
+        card.hidden = !(category === 'all' || card.dataset.category === category);
+      });
+    });
+  });
+})();
+
+(function () {
+  document.querySelectorAll('.like-btn').forEach(function (btn) {
+    var base = parseInt(btn.dataset.count, 10) || 0;
+    var countEl = btn.querySelector('.like-count');
+    var on = false;
+    btn.addEventListener('click', function () {
+      on = !on;
+      btn.classList.toggle('on', on);
+      countEl.textContent = (base + (on ? 1 : 0)).toLocaleString('ko-KR');
+    });
+  });
+})();
+</script>
