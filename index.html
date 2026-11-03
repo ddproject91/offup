@@ -56,7 +56,7 @@
     background: rgba(242,242,239,0.88); backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--line);
   }
-  .nav-row { display: flex; align-items: center; gap: 20px; padding-block: 14px 10px; }
+  .nav-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 20px; padding-block: 14px 10px; }
   .brand { display: flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 20px; letter-spacing: 0.01em; flex: none; }
   .brand svg { width: 26px; height: 26px; color: var(--accent); flex: none; }
   .search-wrap { position: relative; flex: 1 1 auto; max-width: 460px; }
@@ -81,6 +81,12 @@
   .btn-light { background: var(--text); color: var(--bg); }
   .btn-light:hover { background: #DADAD8; }
   @media (max-width: 640px) { .nav-cta .btn-ghost { display: none; } }
+  @media (max-width: 680px) {
+    .nav-row { flex-wrap: wrap; }
+    .nav-row .search-wrap { order: 3; flex-basis: 100%; max-width: none; }
+    .nav-row .nav-cta { display: none; }
+    .mode-switch-nav { order: 2; margin-left: auto; }
+  }
 
   .nav-chips { display: flex; gap: 8px; overflow-x: auto; padding-block: 2px 12px; scrollbar-width: none; }
   .nav-chips::-webkit-scrollbar { display: none; }
@@ -342,12 +348,10 @@
   }
   .mode-btn.on { color: var(--ink-on-bright); }
 
-  .mode-hero { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; margin: 28px 0 8px; }
-  .mode-hero .hint { font-size: 12.5px; color: var(--text-faint); }
-  .mode-hero .mode-btn { width: 96px; padding-block: 9px; font-size: 14px; }
+  .mode-hint { font-size: 12.5px; color: var(--text-faint); margin: 22px 0 8px; }
 
-  .nav-switch-row { display: flex; justify-content: center; padding-block: 2px 12px; }
-  .nav-switch-row .mode-btn { width: 84px; padding-block: 7px; font-size: 12.5px; }
+  .mode-switch-nav { flex: none; margin-left: auto; }
+  .mode-switch-nav .mode-btn { width: 76px; padding-block: 7px; font-size: 12.5px; }
 </style>
 
 <svg width="0" height="0" style="position:absolute">
@@ -374,9 +378,7 @@
       <a class="btn btn-ghost" href="#">로그인</a>
       <a class="btn btn-accent" href="#">회원가입</a>
     </div>
-  </div>
-  <div class="wrap nav-switch-row">
-    <div class="mode-switch" id="navModeSwitch" data-active="off">
+    <div class="mode-switch mode-switch-nav" id="navModeSwitch" data-active="off">
       <span class="mode-thumb"></span>
       <button class="mode-btn on" data-mode="off">OFF</button>
       <button class="mode-btn" data-mode="up">UP</button>
@@ -395,14 +397,7 @@
       <a class="btn btn-ghost" href="#off">행사 둘러보기</a>
     </div>
 
-    <div class="mode-hero">
-      <div class="mode-switch" id="heroModeSwitch" data-active="off">
-        <span class="mode-thumb"></span>
-        <button class="mode-btn on" data-mode="off">OFF</button>
-        <button class="mode-btn" data-mode="up">UP</button>
-      </div>
-      <p class="hint">오프라인 행사는 OFF, 핫딜·설문·소식 같은 온라인 정보는 UP에서 확인하세요.</p>
-    </div>
+    <p class="mode-hint">오프라인 행사는 OFF, 핫딜·설문·소식 같은 온라인 정보는 UP에서 확인하세요 — 오른쪽 위 스위치로 전환할 수 있어요.</p>
 
     <div class="hero-carousel">
       <div class="carousel-track" id="carouselTrack"></div>
