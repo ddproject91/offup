@@ -39,6 +39,15 @@ export interface EventRow {
   verify_status: string | null;
   published: boolean;
   featured: boolean;
+  hashtags: string | null;
+}
+
+export function parseHashtags(raw: string | null): string[] {
+  if (!raw) return [];
+  return raw
+    .split(/[,\s#]+/)
+    .map((t) => t.trim())
+    .filter(Boolean);
 }
 
 export function fmtPeriod(start: string | null, end: string | null): string {

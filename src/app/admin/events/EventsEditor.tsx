@@ -20,6 +20,7 @@ const EMPTY: EventInput = {
   verify_status: "확인 필요",
   published: true,
   featured: false,
+  hashtags: "",
 };
 
 export default function EventsEditor({ initialEvents }: { initialEvents: EventRow[] }) {
@@ -47,6 +48,7 @@ export default function EventsEditor({ initialEvents }: { initialEvents: EventRo
       verify_status: ev.verify_status ?? "확인 필요",
       published: ev.published,
       featured: ev.featured,
+      hashtags: ev.hashtags ?? "",
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -120,6 +122,10 @@ export default function EventsEditor({ initialEvents }: { initialEvents: EventRo
           <label className="field">
             <span className="field-label">출처 링크</span>
             <input value={form.source_url} onChange={(e) => setForm({ ...form, source_url: e.target.value })} placeholder="https://..." />
+          </label>
+          <label className="field">
+            <span className="field-label">해시태그</span>
+            <input value={form.hashtags} onChange={(e) => setForm({ ...form, hashtags: e.target.value })} placeholder="쉼표로 구분, 예: 굿즈, 포토존, 한정판" />
           </label>
         </div>
 

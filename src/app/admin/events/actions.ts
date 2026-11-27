@@ -46,6 +46,7 @@ export interface EventInput {
   verify_status: string;
   published: boolean;
   featured: boolean;
+  hashtags: string;
 }
 
 export async function saveEventAction(input: EventInput) {
@@ -69,6 +70,7 @@ export async function saveEventAction(input: EventInput) {
     verify_status: input.verify_status || "확인 필요",
     published: input.published,
     featured: input.featured,
+    hashtags: input.hashtags || null,
   };
 
   const query = input.id

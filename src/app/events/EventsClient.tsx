@@ -2,8 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Icons from "@/components/Icons";
+import EventCard from "@/components/EventCard";
 import {
-  CATEGORY_LABEL, CATEGORY_OPTIONS, fmtPeriod, fmtLocation, ddayInfo, posterClassFor,
+  CATEGORY_OPTIONS, ddayInfo, posterClassFor,
   type EventRow,
 } from "@/lib/events";
 
@@ -61,31 +62,7 @@ export default function EventsClient({ events }: { events: EventRow[] }) {
 
           <div className="feed-grid">
             {filtered.map(({ ev, dday, posterClass }) => (
-              <div key={ev.id} className="feed-card">
-                <div
-                  className={ev.image_url ? "card-image poster" : `card-image poster ${posterClass}`}
-                  style={ev.image_url ? { backgroundImage: `url('${ev.image_url}')` } : undefined}
-                >
-                  <div className="poster-top">
-                    <span className="poster-tag">{CATEGORY_LABEL[ev.category]}</span>
-                    <span className="poster-dday">{dday}</span>
-                  </div>
-                </div>
-                <div className="card-body">
-                  <h3>{ev.title}</h3>
-                  <p className="card-meta">
-                    {fmtLocation(ev.sido, ev.sigungu, ev.place)}
-                    {fmtLocation(ev.sido, ev.sigungu, ev.place) && fmtPeriod(ev.start_date, ev.end_date) ? " · " : ""}
-                    {fmtPeriod(ev.start_date, ev.end_date)}
-                  </p>
-                  <div className="card-foot">
-                    <span className="stat-mini">검수: {ev.verify_status || "확인 필요"}</span>
-                    {ev.source_url && (
-                      <a className="section-link" style={{ fontSize: 11 }} href={ev.source_url} target="_blank" rel="noopener noreferrer">출처 →</a>
-                    )}
-                  </div>
-                </div>
-              </div>
+              <EventCard key={ev.id} ev={ev} dday={dday} posterClass={posterClass} showFoot />
             ))}
             {filtered.length === 0 && (
               <p className="feed-empty">등록된 행사가 없어요.</p>
