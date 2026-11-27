@@ -1,21 +1,11 @@
 "use server";
 
-import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { getSupabaseAdmin } from "@/lib/supabase";
-import { ADMIN_COOKIE_NAME, expectedAdminCookieValue } from "@/lib/adminAuth";
+import { assertAdmin } from "@/lib/adminAuth";
 import type { EventCategory } from "@/lib/events";
 
 const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
-
-async function assertAdmin() {
-  const expected = await expectedAdminCookieValue();
-  const cookieStore = await cookies();
-  const cookie = cookieStore.get(ADMIN_COOKIE_NAME)?.value;
-  if (!expected || cookie !== expected) {
-    throw new Error("관리자 인증이 필요합니다.");
-  }
-}
 
 export async function uploadImageAction(formData: FormData) {
   await assertAdmin();

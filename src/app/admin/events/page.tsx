@@ -22,7 +22,10 @@ export default async function AdminEventsPage() {
   return (
     <div className="admin-wrap">
       <div className="admin-topbar">
-        <h1>OFF UP 행사 관리</h1>
+        <div>
+          <h1>OFF UP 행사 관리</h1>
+          <a className="admin-nav-link" href="/admin/up">UP 소식 관리로 →</a>
+        </div>
         <form action={logoutAction}>
           <button type="submit" className="logout-btn">로그아웃</button>
         </form>
@@ -35,8 +38,10 @@ export default async function AdminEventsPage() {
 
       <style>{`
         .admin-wrap { max-width: 980px; margin: 0 auto; padding: 24px 20px 80px; font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif; color: #17181A; }
-        .admin-topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
-        .admin-topbar h1 { font-size: 20px; font-weight: 900; margin: 0; }
+        .admin-topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; gap: 12px; }
+        .admin-topbar h1 { font-size: 20px; font-weight: 900; margin: 0 0 4px; }
+        .admin-nav-link { font-size: 12.5px; color: #5B5D61; text-decoration: none; }
+        .admin-nav-link:hover { color: #17181A; }
         .logout-btn { background: none; border: 1px solid #E1E1DD; border-radius: 999px; padding: 8px 16px; font-size: 13px; cursor: pointer; }
         .logout-btn:hover { border-color: #9A9C9F; }
         .admin-error { color: #E8380F; font-size: 14px; }

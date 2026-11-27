@@ -6,8 +6,9 @@ import {
   CATEGORY_LABEL, CATEGORY_OPTIONS, fmtPeriod, fmtLocation, ddayInfo, posterClassFor,
   type EventRow,
 } from "@/lib/events";
+import { fmtPostDate, type UpPost } from "@/lib/upPosts";
 
-export default function HomeClient({ events }: { events: EventRow[] }) {
+export default function HomeClient({ events, upPosts }: { events: EventRow[]; upPosts: UpPost[] }) {
   const live = useMemo(() => {
     return events
       .map((ev, i) => ({ ev, dday: ddayInfo(ev.start_date, ev.end_date), posterClass: posterClassFor(i) }))
@@ -250,89 +251,28 @@ export default function HomeClient({ events }: { events: EventRow[] }) {
 
           <div className="timesale">
             <div className="up-subhead" style={{ marginTop: 0 }}>
-              <h3>핫딜 · 브랜드세일</h3>
-              <span className="section-link">전체 보기 →</span>
+              <h3>UP 소식</h3>
             </div>
-
-            <div className="sale-grid">
-              <div className="sale-card">
-                <span className="sale-tag">12시간 핫딜</span>
-                <span className="sale-off">-40%</span>
-                <span className="sale-brand">텐트공작소</span>
-                <p className="sale-name">2인용 캠핑 텐트 시즌오프</p>
-                <div className="sale-price"><span className="was num">289,000원</span><span className="now num">173,400원</span></div>
-                <div className="sale-foot"><span>재고 12개</span><span className="clock num">07:22:07 남음</span></div>
-              </div>
-              <div className="sale-card">
-                <span className="sale-tag">12시간 핫딜</span>
-                <span className="sale-off">-30%</span>
-                <span className="sale-brand">무신사 스탠다드</span>
-                <p className="sale-name">홍대점 오픈 기념 후드 집업</p>
-                <div className="sale-price"><span className="was num">79,000원</span><span className="now num">55,300원</span></div>
-                <div className="sale-foot"><span>재고 41개</span><span className="clock num">02:48:51 남음</span></div>
-              </div>
-              <div className="sale-card">
-                <span className="sale-tag">12시간 핫딜</span>
-                <span className="sale-off">-40%</span>
-                <span className="sale-brand">아더에러 × 카카오프렌즈</span>
-                <p className="sale-name">협업 한정판 에코백 세트</p>
-                <div className="sale-price"><span className="was num">45,000원</span><span className="now num">27,000원</span></div>
-                <div className="sale-foot"><span>재고 8개</span><span className="clock num">04:11:36 남음</span></div>
-              </div>
-              <div className="sale-card">
-                <span className="sale-tag">12시간 핫딜</span>
-                <span className="sale-off">-40%</span>
-                <span className="sale-brand">해운대 서핑페스타</span>
-                <p className="sale-name">공식 기획전 래시가드</p>
-                <div className="sale-price"><span className="was num">68,000원</span><span className="now num">40,800원</span></div>
-                <div className="sale-foot"><span>재고 23개</span><span className="clock num">11:05:14 남음</span></div>
-              </div>
-              <div className="sale-card">
-                <span className="sale-tag">브랜드세일</span>
-                <span className="sale-off">-40%</span>
-                <span className="sale-brand">나이키</span>
-                <p className="sale-name">시즌오프 러닝화 라인</p>
-                <div className="sale-price"><span className="was num">129,000원</span><span className="now num">77,400원</span></div>
-                <div className="sale-foot"><span>재고 64개</span><span>~10.15까지</span></div>
-              </div>
-              <div className="sale-card">
-                <span className="sale-tag">브랜드세일</span>
-                <span className="sale-off">-20%</span>
-                <span className="sale-brand">무신사 스탠다드</span>
-                <p className="sale-name">가을 신상 전상품 쿠폰</p>
-                <div className="sale-price"><span className="was num">59,000원</span><span className="now num">47,200원</span></div>
-                <div className="sale-foot"><span>재고 다수</span><span>~10.20까지</span></div>
-              </div>
-            </div>
-
-            <div className="up-subhead"><h3>설문조사</h3></div>
-            <div className="survey-grid">
-              <div className="survey-card">
-                <p className="q">올해 가장 기대되는 지역축제는?</p>
-                <p className="survey-lead">1위 · 대구 치맥페스티벌 42%</p>
-                <div className="survey-bar"><span style={{ width: "42%" }} /></div>
-                <div className="survey-meta"><span>참여 3,204명</span><span className="num">D-5 마감</span></div>
-              </div>
-              <div className="survey-card">
-                <p className="q">선호하는 팝업 테마는?</p>
-                <p className="survey-lead">1위 · 콜라보/굿즈 55%</p>
-                <div className="survey-bar"><span style={{ width: "55%" }} /></div>
-                <div className="survey-meta"><span>참여 1,890명</span><span className="num">D-12 마감</span></div>
-              </div>
-              <div className="survey-card">
-                <p className="q">다음 시즌 콜라보 브랜드 추천</p>
-                <p className="survey-lead">1위 · 아더에러 38%</p>
-                <div className="survey-bar"><span style={{ width: "38%" }} /></div>
-                <div className="survey-meta"><span>참여 940명</span><span className="num">D-3 마감</span></div>
-              </div>
-            </div>
-
-            <div className="up-subhead"><h3>콜라보 소식</h3></div>
             <div className="news-list">
-              <div className="news-item"><span className="date num">10.05</span><span className="ntag">콜라보</span><span className="headline">아더에러 × 카카오프렌즈, 2탄 라인업 공개 예고</span></div>
-              <div className="news-item"><span className="date num">10.02</span><span className="ntag">신제품</span><span className="headline">텐트공작소 × 무신사 스탠다드, 캠핑 캡슐 컬렉션 출시</span></div>
-              <div className="news-item"><span className="date num">09.29</span><span className="ntag">제휴</span><span className="headline">자라섬 재즈페스티벌, 공식 굿즈 온라인 단독 판매 시작</span></div>
-              <div className="news-item"><span className="date num">09.26</span><span className="ntag">브랜드</span><span className="headline">나이키, 더현대 서울 시즌오프 팝업 다음 주 오픈 예고</span></div>
+              {upPosts.map((p) => (
+                <div key={p.id} className="news-item">
+                  <span className="date num">{fmtPostDate(p.post_date)}</span>
+                  {p.tag && <span className="ntag">{p.tag}</span>}
+                  <div className="news-body">
+                    <span className="headline">
+                      {p.link_url ? (
+                        <a href={p.link_url} target="_blank" rel="noopener noreferrer">{p.title}</a>
+                      ) : (
+                        p.title
+                      )}
+                    </span>
+                    {p.description && <p className="news-desc">{p.description}</p>}
+                  </div>
+                </div>
+              ))}
+              {upPosts.length === 0 && (
+                <p className="feed-empty">아직 등록된 UP 소식이 없어요.</p>
+              )}
             </div>
           </div>
         </section>
