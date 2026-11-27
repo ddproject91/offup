@@ -5,7 +5,7 @@ import Icons from "@/components/Icons";
 import EventCard from "@/components/EventCard";
 import AuthHeaderActions from "@/components/auth/AuthHeaderActions";
 import {
-  CATEGORY_LABEL, CATEGORY_OPTIONS, fmtPeriod, fmtLocation, ddayInfo, posterClassFor,
+  CATEGORY_LABEL, CATEGORY_OPTIONS, fmtPeriod, fmtLocation, ddayInfo, posterClassFor, parseHashtags,
   type EventRow,
 } from "@/lib/events";
 import { fmtPostDate, fmtPeriodRange, type UpPost } from "@/lib/upPosts";
@@ -200,6 +200,9 @@ export default function HomeClient({ events, upPosts }: { events: EventRow[]; up
                     <p className="slide-period">{fmtPeriod(ev.start_date, ev.end_date)}</p>
                     <h3 className="slide-title">{ev.title}</h3>
                     <p className="slide-loc">{fmtLocation(ev.sido, ev.sigungu, ev.place)}</p>
+                    {parseHashtags(ev.hashtags).length > 0 && (
+                      <p className="slide-tags">{parseHashtags(ev.hashtags).map((t) => `#${t}`).join(" ")}</p>
+                    )}
                   </div>
                 </div>
               ))}
