@@ -14,7 +14,7 @@
   --ink-on-bright: #17181A;
   --font-display: var(--font-anton), 'Arial Narrow', sans-serif;
   --font-body: var(--font-pretendard), 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
-  --font-data: var(--font-space-mono), 'SFMono-Regular', Consolas, monospace;
+  --font-data: var(--font-pretendard), 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
   color-scheme: light;
 }
 
@@ -54,7 +54,7 @@ button { font: inherit; }
 }
 .search-wrap input::placeholder { color: var(--text-faint); }
 .search-wrap input:focus { outline: none; border-color: var(--accent); }
-.nav-cta { display: flex; gap: 8px; flex: none; }
+.nav-cta { display: flex; gap: 8px; flex: none; margin-left: auto; }
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
   padding: 9px 16px; border-radius: 999px; font-size: 13.5px; font-weight: 700;

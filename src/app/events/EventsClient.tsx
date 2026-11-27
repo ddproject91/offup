@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Icons from "@/components/Icons";
 import EventCard from "@/components/EventCard";
+import AuthHeaderActions from "@/components/auth/AuthHeaderActions";
 import {
   CATEGORY_OPTIONS, ddayInfo, posterClassFor,
   type EventRow,
@@ -39,6 +40,7 @@ export default function EventsClient({ events }: { events: EventRow[] }) {
             <svg viewBox="0 0 120 120"><use href="#cup" /></svg>
             OFF <span className="accent">UP</span>
           </a>
+          <AuthHeaderActions />
         </div>
       </nav>
 

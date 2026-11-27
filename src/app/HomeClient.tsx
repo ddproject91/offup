@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Icons from "@/components/Icons";
 import EventCard from "@/components/EventCard";
+import AuthHeaderActions from "@/components/auth/AuthHeaderActions";
 import {
   CATEGORY_LABEL, CATEGORY_OPTIONS, fmtPeriod, fmtLocation, ddayInfo, posterClassFor,
   type EventRow,
@@ -161,10 +162,7 @@ export default function HomeClient({ events, upPosts }: { events: EventRow[]; up
             <svg viewBox="0 0 24 24"><use href="#search" /></svg>
             <input type="text" placeholder="지역, 행사 이름, 테마로 검색해보세요" />
           </div>
-          <div className="nav-cta">
-            <a className="btn btn-ghost" href="#">로그인</a>
-            <a className="btn btn-accent" href="#">회원가입</a>
-          </div>
+          <AuthHeaderActions />
           <div className="mode-switch mode-switch-nav" data-active="off">
             <span className="mode-thumb" />
             <button className="mode-btn on" data-mode="off" onClick={() => handleModeClick("off")}>OFF</button>
