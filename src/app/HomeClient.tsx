@@ -14,10 +14,20 @@ export default function HomeClient({ events }: { events: EventRow[] }) {
       .filter((x): x is { ev: EventRow; dday: string; posterClass: string } => x.dday !== null);
   }, [events]);
 
+  const heroSlides = useMemo(() => {
+    const featured = live.filter((x) => x.ev.featured);
+    return featured.length ? featured : live;
+  }, [live]);
+
+  const sections = useMemo(() => {
+    return CATEGORY_OPTIONS
+      .map((o) => ({ ...o, items: live.filter((x) => x.ev.category === o.value) }))
+      .filter((s) => s.items.length > 0);
+  }, [live]);
+
   const trackRef = useRef<HTMLDivElement>(null);
   const dotsRef = useRef<HTMLDivElement>(null);
   const counterRef = useRef<HTMLSpanElement>(null);
-  const feedEmptyRef = useRef<HTMLParagraphElement>(null);
 
   // Carousel: autoplay + swipe-sync + dots (operates on the DOM after React renders the slides).
   useEffect(() => {
@@ -93,7 +103,7 @@ export default function HomeClient({ events }: { events: EventRow[] }) {
       stopAuto();
       track.removeEventListener("scroll", onScroll);
     };
-  }, [live.length]);
+  }, [heroSlides.length]);
 
   function handleModeClick(mode: "off" | "up") {
     document.querySelectorAll<HTMLElement>(".mode-switch").forEach((sw) => {
@@ -106,20 +116,6 @@ export default function HomeClient({ events }: { events: EventRow[] }) {
     const up = document.getElementById("up");
     if (off) off.hidden = mode !== "off";
     if (up) up.hidden = mode !== "up";
-  }
-
-  function handleTabClick(category: string) {
-    document.querySelectorAll<HTMLButtonElement>(".region-tab").forEach((t) => t.classList.remove("on"));
-    const activeTab = document.querySelector<HTMLButtonElement>(`.region-tab[data-category="${category}"]`);
-    activeTab?.classList.add("on");
-    const cards = document.querySelectorAll<HTMLElement>(".feed-card");
-    let visibleCount = 0;
-    cards.forEach((card) => {
-      const show = category === "all" || card.dataset.category === category;
-      card.hidden = !show;
-      if (show) visibleCount++;
-    });
-    if (feedEmptyRef.current) feedEmptyRef.current.hidden = visibleCount !== 0;
   }
 
   return (
@@ -162,7 +158,7 @@ export default function HomeClient({ events }: { events: EventRow[] }) {
 
           <div className="hero-carousel">
             <div className="carousel-track" ref={trackRef}>
-              {live.map(({ ev, dday, posterClass }) => (
+              {heroSlides.map(({ ev, dday, posterClass }) => (
                 <div key={ev.id} className="slide">
                   <div
                     className={ev.image_url ? "slide-media poster" : `slide-media poster ${posterClass}`}
@@ -183,7 +179,7 @@ export default function HomeClient({ events }: { events: EventRow[] }) {
             </div>
             <div className="carousel-nav">
               <div className="dots" ref={dotsRef} />
-              <span className="carousel-counter" ref={counterRef}>01 / {String(live.length).padStart(2, "0")}</span>
+              <span className="carousel-counter" ref={counterRef}>01 / {String(heroSlides.length).padStart(2, "0")}</span>
             </div>
           </div>
 
@@ -202,50 +198,46 @@ export default function HomeClient({ events }: { events: EventRow[] }) {
               <p className="section-label">OFF · 오프라인</p>
               <h2 className="section-title">전국에서 지금 열리는 오프라인</h2>
             </div>
-            <a className="section-link" href="#">전체 행사 보기 →</a>
+            <a className="section-link" href="/events">전체 행사 보기 →</a>
           </div>
 
-          <div className="region-tabs">
-            <button className="region-tab on" data-category="all" onClick={() => handleTabClick("all")}>전체</button>
-            {CATEGORY_OPTIONS.map((o) => (
-              <button key={o.value} className="region-tab" data-category={o.value} onClick={() => handleTabClick(o.value)}>
-                {o.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="feed-grid">
-            {live.map(({ ev, dday, posterClass }) => (
-              <div key={ev.id} className="feed-card" data-category={ev.category}>
-                <div
-                  className={ev.image_url ? "card-image poster" : `card-image poster ${posterClass}`}
-                  style={ev.image_url ? { backgroundImage: `url('${ev.image_url}')` } : undefined}
-                >
-                  <div className="poster-top">
-                    <span className="poster-tag">{CATEGORY_LABEL[ev.category]}</span>
-                    <span className="poster-dday">{dday}</span>
+          {sections.length === 0 ? (
+            <p className="feed-empty">아직 등록된 행사가 없어요 — 곧 채워질 예정이에요.</p>
+          ) : (
+            <div className="cat-sections">
+              {sections.map((section) => (
+                <div key={section.value} className="cat-section">
+                  <div className="cat-section-head">
+                    <h3>{section.label}</h3>
+                    <a className="section-link" href={`/events?category=${section.value}`}>전체보기 →</a>
+                  </div>
+                  <div className="cat-row">
+                    {section.items.slice(0, 8).map(({ ev, dday, posterClass }) => (
+                      <div key={ev.id} className="feed-card">
+                        <div
+                          className={ev.image_url ? "card-image poster" : `card-image poster ${posterClass}`}
+                          style={ev.image_url ? { backgroundImage: `url('${ev.image_url}')` } : undefined}
+                        >
+                          <div className="poster-top">
+                            <span className="poster-tag">{CATEGORY_LABEL[ev.category]}</span>
+                            <span className="poster-dday">{dday}</span>
+                          </div>
+                        </div>
+                        <div className="card-body">
+                          <h3>{ev.title}</h3>
+                          <p className="card-meta">
+                            {fmtLocation(ev.sido, ev.sigungu, ev.place)}
+                            {fmtLocation(ev.sido, ev.sigungu, ev.place) && fmtPeriod(ev.start_date, ev.end_date) ? " · " : ""}
+                            {fmtPeriod(ev.start_date, ev.end_date)}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
-                <div className="card-body">
-                  <h3>{ev.title}</h3>
-                  <p className="card-meta">
-                    {fmtLocation(ev.sido, ev.sigungu, ev.place)}
-                    {fmtLocation(ev.sido, ev.sigungu, ev.place) && fmtPeriod(ev.start_date, ev.end_date) ? " · " : ""}
-                    {fmtPeriod(ev.start_date, ev.end_date)}
-                  </p>
-                  <div className="card-foot">
-                    <span className="stat-mini">검수: {ev.verify_status || "확인 필요"}</span>
-                    {ev.source_url && (
-                      <a className="section-link" style={{ fontSize: 11 }} href={ev.source_url} target="_blank" rel="noopener noreferrer">출처 →</a>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-            <p className="feed-empty" ref={feedEmptyRef} hidden={live.length !== 0}>
-              아직 등록된 행사가 없어요 — 곧 채워질 예정이에요.
-            </p>
-          </div>
+              ))}
+            </div>
+          )}
         </section>
 
         <section className="section" id="up" hidden>

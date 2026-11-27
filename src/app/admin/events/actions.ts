@@ -55,6 +55,7 @@ export interface EventInput {
   intro: string;
   verify_status: string;
   published: boolean;
+  featured: boolean;
 }
 
 export async function saveEventAction(input: EventInput) {
@@ -77,6 +78,7 @@ export async function saveEventAction(input: EventInput) {
     intro: input.intro || null,
     verify_status: input.verify_status || "확인 필요",
     published: input.published,
+    featured: input.featured,
   };
 
   const query = input.id

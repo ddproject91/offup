@@ -167,6 +167,15 @@ button { font: inherit; }
 .section-link { font-size: 13px; font-weight: 700; color: var(--text-soft); text-decoration: none; white-space: nowrap; }
 .section-link:hover { color: var(--text); }
 
+/* ---------- category sections (home) ---------- */
+.cat-sections { display: flex; flex-direction: column; gap: 40px; }
+.cat-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.cat-section-head h3 { font-size: 17px; }
+.cat-row { display: flex; gap: 14px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+.cat-row::-webkit-scrollbar { display: none; }
+.cat-row .feed-card { flex: 0 0 230px; }
+@media (max-width: 600px) { .cat-row .feed-card { flex-basis: 70vw; } }
+
 /* ---------- region tabs ---------- */
 .region-tabs { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 20px; scrollbar-width: none; }
 .region-tabs::-webkit-scrollbar { display: none; }

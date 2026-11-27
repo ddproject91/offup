@@ -18,6 +18,7 @@ const EMPTY: EventInput = {
   intro: "",
   verify_status: "확인 필요",
   published: true,
+  featured: false,
 };
 
 function ImageField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
@@ -91,6 +92,7 @@ export default function EventsEditor({ initialEvents }: { initialEvents: EventRo
       intro: ev.intro ?? "",
       verify_status: ev.verify_status ?? "확인 필요",
       published: ev.published,
+      featured: ev.featured,
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -187,6 +189,10 @@ export default function EventsEditor({ initialEvents }: { initialEvents: EventRo
             <input type="checkbox" checked={form.published} onChange={(e) => setForm({ ...form, published: e.target.checked })} />
             <span>사이트에 노출</span>
           </label>
+          <label className="field checkbox-field">
+            <input type="checkbox" checked={form.featured} onChange={(e) => setForm({ ...form, featured: e.target.checked })} />
+            <span>상단 캐러셀에 추천 노출</span>
+          </label>
         </div>
 
         {saveError && <p className="field-error">{saveError}</p>}
@@ -217,6 +223,7 @@ export default function EventsEditor({ initialEvents }: { initialEvents: EventRo
             <div className="event-info">
               <p className="event-title">
                 {ev.title} {!ev.published && <span className="badge-hidden">비공개</span>}
+                {ev.featured && <span className="badge-featured">추천</span>}
               </p>
               <p className="event-meta">
                 {CATEGORY_LABEL[ev.category]} · {[ev.sido, ev.sigungu, ev.place].filter(Boolean).join(" ")} · {ev.start_date ?? "-"}{ev.end_date && ev.end_date !== ev.start_date ? ` – ${ev.end_date}` : ""}
@@ -265,6 +272,7 @@ export default function EventsEditor({ initialEvents }: { initialEvents: EventRo
         .event-info { flex: 1; min-width: 0; }
         .event-title { font-size: 14px; font-weight: 700; margin: 0; }
         .badge-hidden { font-size: 10px; font-weight: 700; color: #E8380F; background: #FFE2DA; padding: 2px 7px; border-radius: 999px; margin-left: 6px; }
+        .badge-featured { font-size: 10px; font-weight: 700; color: #B85B00; background: #FFEFCF; padding: 2px 7px; border-radius: 999px; margin-left: 6px; }
         .event-meta { font-size: 12px; color: #5B5D61; margin: 2px 0 0; }
         .event-actions { display: flex; gap: 6px; flex: none; }
         .event-actions button { border: 1px solid #E1E1DD; background: #fff; border-radius: 8px; padding: 6px 12px; font-size: 12.5px; cursor: pointer; }

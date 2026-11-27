@@ -38,6 +38,7 @@ export interface EventRow {
   intro: string | null;
   verify_status: string | null;
   published: boolean;
+  featured: boolean;
 }
 
 export function fmtPeriod(start: string | null, end: string | null): string {
