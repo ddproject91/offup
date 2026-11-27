@@ -1,12 +1,39 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Icons from "@/components/Icons";
 import {
   CATEGORY_LABEL, CATEGORY_OPTIONS, fmtPeriod, fmtLocation, ddayInfo, posterClassFor,
   type EventRow,
 } from "@/lib/events";
-import { fmtPostDate, type UpPost } from "@/lib/upPosts";
+import { fmtPostDate, fmtPeriodRange, type UpPost } from "@/lib/upPosts";
+
+function Countdown({ target }: { target: string }) {
+  const [remainingMs, setRemainingMs] = useState<number | null>(null);
+
+  useEffect(() => {
+    const end = new Date(target).getTime();
+    const tick = () => setRemainingMs(end - Date.now());
+    tick();
+    const id = window.setInterval(tick, 1000);
+    return () => window.clearInterval(id);
+  }, [target]);
+
+  if (remainingMs === null) return null;
+  if (remainingMs <= 0) return <span className="countdown ended num">종료</span>;
+
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const totalSec = Math.floor(remainingMs / 1000);
+  const days = Math.floor(totalSec / 86400);
+  const hours = Math.floor((totalSec % 86400) / 3600);
+  const minutes = Math.floor((totalSec % 3600) / 60);
+  const seconds = totalSec % 60;
+  const text = days > 0
+    ? `${days}일 ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`
+    : `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+
+  return <span className="countdown num">{text} 남음</span>;
+}
 
 export default function HomeClient({ events, upPosts }: { events: EventRow[]; upPosts: UpPost[] }) {
   const live = useMemo(() => {
@@ -256,7 +283,11 @@ export default function HomeClient({ events, upPosts }: { events: EventRow[]; up
             <div className="news-list">
               {upPosts.map((p) => (
                 <div key={p.id} className="news-item">
-                  <span className="date num">{fmtPostDate(p.post_date)}</span>
+                  {p.image_url && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={p.image_url} alt="" className="news-thumb" />
+                  )}
+                  {!p.image_url && <span className="date num">{fmtPostDate(p.post_date)}</span>}
                   {p.tag && <span className="ntag">{p.tag}</span>}
                   <div className="news-body">
                     <span className="headline">
@@ -266,8 +297,12 @@ export default function HomeClient({ events, upPosts }: { events: EventRow[]; up
                         p.title
                       )}
                     </span>
+                    {(p.starts_at || p.ends_at) && (
+                      <p className="news-desc">{fmtPeriodRange(p.starts_at, p.ends_at)}</p>
+                    )}
                     {p.description && <p className="news-desc">{p.description}</p>}
                   </div>
+                  {p.ends_at && <Countdown target={p.ends_at} />}
                 </div>
               ))}
               {upPosts.length === 0 && (

@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import type { UpPost } from "@/lib/upPosts";
-import { saveUpPostAction, deleteUpPostAction, type UpPostInput } from "./actions";
+import { toDatetimeLocalValue, fromDatetimeLocalValue, type UpPost } from "@/lib/upPosts";
+import ImageField from "@/components/ImageField";
+import { saveUpPostAction, deleteUpPostAction, uploadImageAction, type UpPostInput } from "./actions";
 
 const EMPTY: UpPostInput = {
   title: "",
@@ -10,6 +11,9 @@ const EMPTY: UpPostInput = {
   description: "",
   link_url: "",
   post_date: "",
+  image_url: "",
+  starts_at: "",
+  ends_at: "",
   published: true,
 };
 
@@ -29,6 +33,9 @@ export default function UpPostsEditor({ initialPosts }: { initialPosts: UpPost[]
       description: p.description ?? "",
       link_url: p.link_url ?? "",
       post_date: p.post_date ?? "",
+      image_url: p.image_url ?? "",
+      starts_at: toDatetimeLocalValue(p.starts_at),
+      ends_at: toDatetimeLocalValue(p.ends_at),
       published: p.published,
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -43,7 +50,12 @@ export default function UpPostsEditor({ initialPosts }: { initialPosts: UpPost[]
   async function handleSave() {
     setSaving(true);
     setSaveError(null);
-    const result = await saveUpPostAction(editingId ? { ...form, id: editingId } : form);
+    const payload: UpPostInput = {
+      ...form,
+      starts_at: fromDatetimeLocalValue(form.starts_at) ?? "",
+      ends_at: fromDatetimeLocalValue(form.ends_at) ?? "",
+    };
+    const result = await saveUpPostAction(editingId ? { ...payload, id: editingId } : payload);
     setSaving(false);
     if (!result.ok) {
       setSaveError(result.error);
@@ -84,7 +96,17 @@ export default function UpPostsEditor({ initialPosts }: { initialPosts: UpPost[]
             <span className="field-label">링크</span>
             <input value={form.link_url} onChange={(e) => setForm({ ...form, link_url: e.target.value })} placeholder="https://..." />
           </label>
+          <label className="field">
+            <span className="field-label">세일 시작 일시 (선택)</span>
+            <input type="datetime-local" value={form.starts_at} onChange={(e) => setForm({ ...form, starts_at: e.target.value })} />
+          </label>
+          <label className="field">
+            <span className="field-label">세일 종료 일시 (선택, 카운트다운 기준)</span>
+            <input type="datetime-local" value={form.ends_at} onChange={(e) => setForm({ ...form, ends_at: e.target.value })} />
+          </label>
         </div>
+
+        <ImageField value={form.image_url} onChange={(v) => setForm({ ...form, image_url: v })} upload={uploadImageAction} />
 
         <label className="field">
           <span className="field-label">설명</span>
@@ -113,12 +135,17 @@ export default function UpPostsEditor({ initialPosts }: { initialPosts: UpPost[]
         {posts.length === 0 && <p className="empty">등록된 소식이 없어요.</p>}
         {posts.map((p) => (
           <div key={p.id} className="event-row">
+            {p.image_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={p.image_url} alt="" className="up-thumb" />
+            ) : null}
             <div className="event-info">
               <p className="event-title">
                 {p.title} {!p.published && <span className="badge-hidden">비공개</span>}
               </p>
               <p className="event-meta">
                 {p.tag || "태그 없음"} · {p.post_date ?? "-"}
+                {p.ends_at ? ` · ~${new Date(p.ends_at).toLocaleString("ko-KR")}` : ""}
               </p>
             </div>
             <div className="event-actions">
@@ -135,13 +162,18 @@ export default function UpPostsEditor({ initialPosts }: { initialPosts: UpPost[]
         .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
         .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
         .field-label { font-size: 12px; font-weight: 700; color: #5B5D61; }
-        .field input[type="text"], .field input[type="date"], .field textarea {
-          border: 1px solid #E1E1DD; border-radius: 10px; padding: 9px 12px; font-size: 13.5px; font-family: inherit; outline: none;
-        }
         .field input, .field textarea { border: 1px solid #E1E1DD; border-radius: 10px; padding: 9px 12px; font-size: 13.5px; font-family: inherit; outline: none; }
         .field input:focus, .field textarea:focus { border-color: #FF4A2B; }
         .field-error { color: #E8380F; font-size: 12px; margin: 4px 0 0; }
         .checkbox-field { flex-direction: row; align-items: center; gap: 8px; }
+        .image-row { display: flex; gap: 8px; }
+        .image-row input { flex: 1; min-width: 0; }
+        .upload-btn {
+          flex: none; border: 1px solid #E1E1DD; border-radius: 10px; padding: 9px 14px; font-size: 12.5px;
+          cursor: pointer; white-space: nowrap; background: #F5F5F2;
+        }
+        .upload-btn:hover { border-color: #9A9C9F; }
+        .image-preview { margin-top: 8px; width: 160px; height: 120px; object-fit: cover; border-radius: 10px; border: 1px solid #E1E1DD; }
         .form-actions { display: flex; gap: 10px; margin-top: 8px; }
         .btn-save { background: #17181A; color: #fff; border: none; border-radius: 999px; padding: 11px 22px; font-size: 13.5px; font-weight: 700; cursor: pointer; }
         .btn-save:disabled { opacity: 0.6; cursor: default; }
@@ -151,6 +183,7 @@ export default function UpPostsEditor({ initialPosts }: { initialPosts: UpPost[]
         .event-list { display: flex; flex-direction: column; gap: 10px; }
         .empty { color: #9A9C9F; font-size: 13px; }
         .event-row { display: flex; align-items: center; gap: 14px; background: #fff; border: 1px solid #E1E1DD; border-radius: 12px; padding: 10px 14px; }
+        .up-thumb { width: 56px; height: 56px; flex: none; border-radius: 8px; object-fit: cover; background: #F5F5F2; }
         .event-info { flex: 1; min-width: 0; }
         .event-title { font-size: 14px; font-weight: 700; margin: 0; }
         .badge-hidden { font-size: 10px; font-weight: 700; color: #E8380F; background: #FFE2DA; padding: 2px 7px; border-radius: 999px; margin-left: 6px; }
