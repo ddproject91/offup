@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { getSupabasePublic } from "@/lib/supabasePublic";
 import type { EventRow } from "@/lib/events";
 import EventsClient from "./EventsClient";
@@ -18,9 +17,5 @@ export default async function EventsPage() {
     events = (data ?? []) as EventRow[];
   }
 
-  return (
-    <Suspense fallback={null}>
-      <EventsClient events={events} />
-    </Suspense>
-  );
+  return <EventsClient events={events} />;
 }

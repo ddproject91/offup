@@ -1,7 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import Icons from "@/components/Icons";
 import {
   CATEGORY_LABEL, CATEGORY_OPTIONS, fmtPeriod, fmtLocation, ddayInfo, posterClassFor,
@@ -9,8 +8,14 @@ import {
 } from "@/lib/events";
 
 export default function EventsClient({ events }: { events: EventRow[] }) {
-  const searchParams = useSearchParams();
-  const [category, setCategory] = useState(searchParams.get("category") || "all");
+  const [category, setCategory] = useState("all");
+
+  // Read ?category= after mount (plain browser API, not useSearchParams) so this
+  // page stays statically prerendered instead of bailing to client-only render.
+  useEffect(() => {
+    const fromUrl = new URLSearchParams(window.location.search).get("category");
+    if (fromUrl) setCategory(fromUrl);
+  }, []);
 
   const live = useMemo(() => {
     return events
